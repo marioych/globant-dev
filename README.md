@@ -41,36 +41,71 @@ This project aims to perform the **migration of historical data** from **CSV** f
 
 Proof of Functionality
 
-Load Files in ADLS Main
-ADLS Gen2 is deployed to store CSV files.
-    - RV: Raw Vault
-	- DV: Dimensional Vault
+1. Initial File Ingestion Process:
 
-ADLS Backup
-ADLS Gen2 is deployed for backup files and tables’ data. It uses a paired region from the main one.
-	•	Another approach would be to use the read-access geo-zone concept, depending on cost and complexity.
+![Alt text](alds_initial_data.png)  
+ADLS path where the initial files to be loaded are located.
 
-Azure SQL Database
-	•	Dedicated SQL Pool is deployed to query data.
-	•	There are two types of tables:
-	•	Main: For principal data.
-	•	Backup: For restore operations.
+![Alt text](pipeline_initial_load.png)  
+Data Factory Pipeline where the initial load takes place.
 
-Azure Data Factory
-Azure Data Factory is used to move data from RV to UV or DV, depending on the data’s origin.
-	•	It is also required to execute Databricks notebooks.
-	•	There are two pipelines:
-	•	One for ETL operations for the main tables.
-	•	The second for backup processes.
+![Alt text](pipeline_initial_load.png)  
+Data Factory Pipeline with 3 activities.
 
-Azure Databricks
-Databricks notebooks are used for data transformation and loading into another path, such as UV or DV.
+---
 
-Azure App Services for API Solution
-App Services are used to mount the function_app.py script:
-	•	function_app.py runs .
+2. SQL Tables Backup Process:
 
+![Alt text](pipeline_bkp_tables.png)  
+Data Factory Pipeline with 3 activities.
 
+![Alt text](alds_bkp_tables.png)  
+ADLS path where the backups of the tables in AVRO format are stored.
+
+---
+
+3. SQL Tables Restore Process:
+
+![Alt text](truncate_table.png)  
+Truncating tables to perform the restore.
+
+![Alt text](pipeline_restore_tables.png)  
+Data Factory Pipeline with 3 activities.
+
+![Alt text](restore_table.png)  
+Tables loaded with the `pipeline_restore_tables` process.
+
+---
+
+4. API Data Insertion:
+
+![Alt text](api_insert_input.png)  
+Input data for the API.
+
+![Alt text](api_insert_ouput.png)  
+API Output.
+
+![Alt text](api_insert_ouput.png)  
+Log of records not inserted.
+
+![Alt text](api_inset_table.png)  
+Validated record inserted.
+
+---
+
+5. API Data Retrieval:
+
+![Alt text](challenge_endpoint_1.png)  
+First request for Challenge 2.
+
+![Alt text](challenge_endpoint_2.png)  
+Second request for Challenge 2.
+
+## Azure App Services for API Solution
+
+App Services are used to mount the `function_app.py` script:
+  - `function_app.py` runs the API and connects to Azure Synapse using pyodbc to ingest records.
+  
 ## 📋 **Installation and Setup**
 
 ### Clone the Repository
