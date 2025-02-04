@@ -85,7 +85,7 @@ Input data for the API.
 ![Alt text](api_insert_ouput.png)  
 API Output.
 
-![Alt text](api_insert_ouput.png)  
+![Alt text](api_insert_log.png)  
 Log of records not inserted.
 
 ![Alt text](api_inset_table.png)  
@@ -105,7 +105,7 @@ Second request for Challenge 2.
 
 App Services are used to mount the `function_app.py` script:
   - `function_app.py` runs the API and connects to Azure Synapse using pyodbc to ingest records.
-  
+
 ## 📋 **Installation and Setup**
 
 ### Clone the Repository
